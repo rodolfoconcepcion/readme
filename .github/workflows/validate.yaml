@@ -32,4 +32,4 @@ jobs:
       with:
         category: integration
         comment: false
-        ignore: brands
+        ignore: brands, topics, issues

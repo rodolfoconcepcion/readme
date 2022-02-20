@@ -10,7 +10,8 @@ import asyncio
 import json
 import os
 from shutil import copyfile
-from typing import Any, List
+from typing import Any, List, Dict
+from xmlrpc.client import DateTime
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -21,7 +22,7 @@ from homeassistant.helpers.template import AllStates
 from homeassistant.loader import Integration, IntegrationNotFound, async_get_integration
 from homeassistant.setup import async_get_loaded_integrations
 from jinja2 import Template
-
+import datetime
 
 from .const import DOMAIN, DOMAIN_DATA, LOGGER, STARTUP_MESSAGE
 
@@ -152,11 +153,17 @@ async def add_services(hass: HomeAssistant):
 
         custom_components = await get_custom_integrations(hass)
         hacs_components = get_hacs_components(hass)
+        installed_addons = get_ha_installed_addons(hass)
+        # Getting the current date and time
+        today = datetime.datetime.now()
+        date_time = today.strftime("%m/%d/%Y, %H:%M:%S")
 
         variables = {
             "custom_components": custom_components,
             "states": AllStates(hass),
             "hacs_components": hacs_components,
+            "addons": installed_addons,
+            "date_time": date_time
         }
 
         content = await read_file(hass, "templates/README.j2")
@@ -183,6 +190,15 @@ def get_hacs_components(hass: HomeAssistant):
         }
         for repo in hacs.repositories.list_downloaded or []
     ]
+
+
+def get_ha_installed_addons(hass: HomeAssistant) -> List[Dict[str, Any]]:
+    supervisor_info = hass.components.hassio.get_supervisor_info()
+
+    if supervisor_info:
+        return supervisor_info.get("addons", [])
+    else:
+        return []
 
 
 def get_repository_name(repository) -> str:

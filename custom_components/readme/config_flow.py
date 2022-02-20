@@ -37,7 +37,7 @@ class ReadmeFlowHandler(config_entries.ConfigFlow):
         """Show the configuration form to edit data."""
 
         # Defaults
-        convert = False
+        convert = True
 
         if user_input is not None:
             if "convert" in user_input:

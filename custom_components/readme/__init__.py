@@ -12,6 +12,7 @@ import os
 from shutil import copyfile
 from typing import Any, List, Dict
 from xmlrpc.client import DateTime
+import datetime
 
 import homeassistant.helpers.config_validation as cv
 import voluptuous as vol
@@ -22,7 +23,6 @@ from homeassistant.helpers.template import AllStates
 from homeassistant.loader import Integration, IntegrationNotFound, async_get_integration
 from homeassistant.setup import async_get_loaded_integrations
 from jinja2 import Template
-import datetime
 
 from .const import DOMAIN, DOMAIN_DATA, LOGGER, STARTUP_MESSAGE
 
